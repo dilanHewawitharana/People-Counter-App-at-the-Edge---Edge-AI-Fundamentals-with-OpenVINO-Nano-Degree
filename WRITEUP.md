@@ -49,10 +49,10 @@ Command to convert tensor flow model to IR format using model optimizer.
 python /opt/intel/openvino/deployment_tools/model_optimizer/mo.py --input_model frozen_inference_graph.pb --tensorflow_object_detection_api_pipeline_config pipeline.config --reverse_input_channels --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/faster_rcnn_support.json
 ```
 - Result images are following
-    ![result image01](./images/Result/1.png)
-    ![result image02](./images/Result/2.png)
-    ![result image03](./images/Result/3.png)
-    ![result image04](./images/Result/4.png)
+    ![result image01](./images/Result/1.PNG)
+    ![result image02](./images/Result/2.PNG)
+    ![result image03](./images/Result/3.PNG)
+    ![result image04](./images/Result/4.PNG)
 ## Assess Model Use Cases
 
 * Count the number of people who attend to office as an attendance system.
@@ -104,10 +104,10 @@ In investigating potential people counter models, I tried each of the following 
   - I was able to convert this model into IR format succefully and generate .xml and .bin file.
 
   - Result images are following
-    ![result image01](./images/Result/1.png)
-    ![result image02](./images/Result/2.png)
-    ![result image03](./images/Result/3.png)
-    ![result image04](./images/Result/4.png)
+    ![result image01](./images/Result/1.PNG)
+    ![result image02](./images/Result/2.PNG)
+    ![result image03](./images/Result/3.PNG)
+    ![result image04](./images/Result/4.PNG)
   
 - Model 2: [faster_rcnn_nas_coco]
   - [Model Source] 
@@ -137,7 +137,7 @@ In investigating potential people counter models, I tried each of the following 
     ```
 
     - Could not converted into IR format properly.
-    ![result image05](./images/Result/e1.png)
+    ![result image05](./images/Result/e1.PNG)
 
 - Model 3: [ssd_mobilenet_v2_coco]
   - [Model Source] 
@@ -166,4 +166,4 @@ In investigating potential people counter models, I tried each of the following 
     python /opt/intel/openvino/deployment_tools/model_optimizer/mo.py --input_model frozen_inference_graph.pb --tensorflow_object_detection_api_pipeline_config pipeline.config --reverse_input_channels --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/faster_rcnn_support.json
     ```
     - Could not converted into IR format properly.
-    ![result image06](./images/Result/e2.png)
+    ![result image06](./images/Result/e2.PNG)
