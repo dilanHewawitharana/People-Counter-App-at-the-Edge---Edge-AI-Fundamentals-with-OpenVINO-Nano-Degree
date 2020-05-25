@@ -161,10 +161,10 @@ In this case:
 python main.py -i resources/Pedestrian_Detect_2_1_1.mp4 -m faster_rcnn_inception_v2_coco_2018_01_28/frozen_inference_graph.xml -l /opt/intel/openvino/deployment_tools/inference_engine/lib/intel64/libcpu_extension_sse4.so -d CPU -pt 0.4 | ffmpeg -v warning -f rawvideo -pixel_format bgr24 -video_size 768x432 -framerate 24 -i - http://0.0.0.0:3004/fac.ffm
 ```
 Result images are following:
-   ![result image01](./images/Result/1.png)
-   ![result image02](./images/Result/2.png)
-   ![result image03](./images/Result/3.png)
-   ![result image04](./images/Result/4.png)
+   ![result image01](./images/Result/1.PNG)
+   ![result image02](./images/Result/2.PNG)
+   ![result image03](./images/Result/3.PNG)
+   ![result image04](./images/Result/4.PNG)
 
 If you are in the classroom workspace, use the “Open App” button to view the output. If working locally, to see the output on a web based interface, open the link [http://0.0.0.0:3004](http://0.0.0.0:3004/) in a browser.
 
