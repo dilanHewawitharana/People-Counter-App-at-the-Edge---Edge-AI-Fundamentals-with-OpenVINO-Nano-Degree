@@ -44,12 +44,11 @@ MQTT_KEEPALIVE_INTERVAL = 60
 check_in_cnt_check = 0;
 check_out_cnt_check = 0;
 
+timer_check = False
 current_count = 0
 total_count = 0
 
-timer_on = False
-timer_start = None
-timer_end = None
+frame_count = 0
 duration = 0
 
 
@@ -198,7 +197,6 @@ def infer_on_stream(args, client):
         
         ### TODO: Start asynchronous inference for specified request ###
         infer_network.exec_net(p_frame, request_id)
-        average_duration = None
 
         ### TODO: Wait for the result ###
         if infer_network.wait() == 0:
@@ -208,17 +206,20 @@ def infer_on_stream(args, client):
             draw_boxes(frame, result, prob_threshold, width, height)
         
             #Time duration calculate
-            global timer_on
+            global frame_count
             global current_count
             global duration
-            if (current_count > 0) and (timer_on == False): #Timer on if there are people detedted
-                timer_on = True
-                timer_start = time.time()
-            elif (current_count == 0) and (timer_on == True): #Timer off when no people detected
-                timer_on = False
-                timer_end = time.time()
-                duration += timer_end - timer_start
-                average_duration = duration/total_count
+            global timer_check
+            average_duration = None
+            if (current_count > 0): #Timer on if there are people detedted
+                frame_count += 1
+                timer_check = True
+            elif (current_count == 0) and (timer_check == True): #Timer off when no people detected
+                timer_check = False
+                frame_count += 1
+                duration += frame_count
+                frame_count = 0
+                average_duration = (duration/cap.get(cv2.CAP_PROP_FPS))/total_count
 
             ### TODO: Calculate and send relevant information on ###
             ### current_count, total_count and duration to the MQTT server ###
@@ -236,6 +237,7 @@ def infer_on_stream(args, client):
                 
             cv2.putText(frame, "Current Count : %d" %current_count, (15, 15), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 255), 1)
             cv2.putText(frame, "Total Count : %d" %total_count, (15, 35), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 255), 1)
+            cv2.putText(frame, "fps : %d" %cap.get(cv2.CAP_PROP_FPS), (15, 55), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 255), 1)
 
         ### TODO: Send the frame to the FFMPEG server ###
         ### TODO: Write an output image if `single_image_mode` ###
