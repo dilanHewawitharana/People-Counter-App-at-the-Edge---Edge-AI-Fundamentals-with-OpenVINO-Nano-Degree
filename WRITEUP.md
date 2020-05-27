@@ -28,6 +28,14 @@ In there you can see and download lot of pre trained models that can use for obj
 * faster_rcnn_nas - Could not convert into IR format
 * ssdlite_mobilenet_v2_coco - Could not convert into IR format
 
+-When compare this "ssd_mobilenet_v2_coco_2018_03_29" with and without openvino kit,
+  * Accuracy is somewhat go down with openvino kit, because this model could not detect human continuously in each frame after convert      into IR format. But it does not affect lot for me, because I was able to handle it programmatically for this task.
+  * The size of the model is almost same after convert into IR format. frozen_inference_graph.bin is about 65.697MB and                     frozen_inference_graph.pb is aabout 68.055MB.   
+  * When using this model with openvino kit, it processing speed was really good and it could able to process and send frame and other      data to server side efficiently.
+  * When convert model into IR format, the Preprocessor block has been removed. Only nodes performing mean value subtraction and scaling    (if applicable) are kept.
+  * Model optimizer does not take lot of time to convert this model into IR format. Total execution time: 64.16 seconds.
+  * fps rate is pretty higher with the openvino toolkit and in my case fps rate is 10.
+
 
 Finally I choose ssd_mobilenet_v2_coco_2018_03_29 model because it gives good result when convert into IR format with model optimizer.
 To download and convert into IR format, I used following steps
@@ -57,18 +65,14 @@ python main.py -i resources/Pedestrian_Detect_2_1_1.mp4 -m ssd_mobilenet_v2_coco
 ```
 
 - Result images are following
-    ![result image01](./images/Result/t1.PNG)
-    ![result image02](./images/Result/t2.PNG)
-    ![result image03](./images/Result/t3.PNG)
-    ![result image04](./images/Result/t4.PNG)
+  ![result image01](./images/Result/t1.PNG)
+  ![result image02](./images/Result/t2.PNG)
+  ![result image03](./images/Result/t3.PNG)
+  ![result image04](./images/Result/t4.PNG)
 
--When compare this "ssd_mobilenet_v2_coco_2018_03_29" with and without openvino kit,
-  * Accuracy is somewhat go down with openvino kit, because this model could not detect human continuously in each frame after convert      into IR format. But it does not affect lot for me, because I was able to handle it programmatically for this task.
-  * The size of the model is almost same after convert into IR format. frozen_inference_graph.bin is about 65.697MB and                     frozen_inference_graph.pb is aabout 68.055MB.   
-  * When using this model with openvino kit, it processing speed was really good and it could able to process and send frame and other      data to server side efficiently.
-  * When convert model into IR format, the Preprocessor block has been removed. Only nodes performing mean value subtraction and scaling    (if applicable) are kept.
-  * Model optimizer does not take lot of time to convert this model into IR format. Total execution time: 64.16 seconds.
+## Lighting, model accuracy, and camera focal length/image size, and the effects these may have on an end user requirement.
 
+In my case, the chosen model could not detect people continuously so I can say that model accuracy is not perfect. But when consider about the end user requirement, the overall system performance is good. The reason is that the way I calculate the human object. In this app, I check whether people come in or out from the frame in a particular area. Check in area is 30% from the bottom of the frame and check out area is 15% from the right margin from the frame. Once human detect on this checking area, we take decision that human come in to frame or come out from the frame. Then we ignore next 50 frames (about 5 second) for avoiding multiple calculating of same object. So, in this way, we do not need of continuous detection of human object. So I believe if Lighting, model accuracy, and camera focal length/image size… etc. are change with different environment, this app may capable to detect human object and calculate total count and average time because this app do not need of continuous tracking of human object. Only need to detect human object in one time within the checking area of the frame.
 
 ## Assess Model Use Cases
 
