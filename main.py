@@ -160,6 +160,8 @@ def infer_on_stream(args, client):
     infer_network.load_model(model, CPU_EXTENSION, DEVICE)
     net_input_shape = infer_network.get_input_shape()
     
+    request_id=0
+    
     ### TODO: Handle the input stream ###
     # Camera input stream
     if args.input == 'CAM':
@@ -195,7 +197,7 @@ def infer_on_stream(args, client):
         p_frame = p_frame.reshape(1, *p_frame.shape)
         
         ### TODO: Start asynchronous inference for specified request ###
-        infer_network.exec_net(p_frame)
+        infer_network.exec_net(p_frame, request_id)
         average_duration = None
 
         ### TODO: Wait for the result ###
