@@ -12,9 +12,9 @@ The Inference Engine loads the layers from the input model IR files into the spe
 
 ## Comparing Model Performance
 
-In my case, I have downloaded several models from the TensorFlow Object Detection Model Zoo. But most of the time, It does not correctly converted to IR with the Model Optimizer. During the converting process, there are some errors. Other problem I faced is that how to illustrate result after load some specific model into Inference Engine. 
+In my case, I have downloaded several models from the TensorFlow Object Detection Model Zoo. Some models successfully converted into IR format but some are not correctly converted to IR with the Model Optimizer because during the converting process, there are some errors. Other problem I faced is that how to illustrate result after load some specific model into Inference Engine. 
 
-So I have to focus my attention to one specific model that give me some trustable result when I use that model with OpenVino tool kit. Since I have use only one model in this project, I could not compare the performance.
+So I have to focus my attention to 3 model that give me some trustable result when I use that model with OpenVino tool kit. 
 
 I will explain here the step by step to how I convert “faster_rcnn_inception_v2_coco_2018_01_28” model so that it can use with OpenVino tool kit.
 You can go to TensorFlow Object Detection Model Zoo using following link.
@@ -22,37 +22,40 @@ https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc
 
 In there you can see and download lot of pre trained models that can use for object detection. In my case I tried following models.
 
-* faster_rcnn_inception_v2_coco
-* faster_rcnn_nas
-* ssdlite_mobilenet_v2_coco
+* faster_rcnn_inception_v2_coco - Gives accurate result but it was really slow when processing
+* faster_rcnn_nas - Could not convert into IR format
+* ssdlite_mobilenet_v2_coco - Could not convert into IR format
+* ssd_mobilenet_v1_coco_2018_01_28 - Gives good result but sometime this model could not detect human continuously .
+* ssd_mobilenet_v2_coco_2018_01_28 - Gives good result but sometime this model could not detect human continuously.
 
-But only faster_rcnn_inception_v2_coco model gives good result when convert into IR format with model optimizer.
+Finally I choose ssd_mobilenet_v2_coco_2018_01_28 model because it gives good result when convert into IR format with model optimizer.
 To download and convert into IR format, I used following steps
 
 Command to download model.
 ```
-wget http://download.tensorflow.org/models/object_detection/faster_rcnn_inception_v2_coco_2018_01_28.tar.gz
+wget http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v2_coco_2018_01_28.tar.gz
 ```
 
 Then extracted using following command.
 ```
-tar -xvf faster_rcnn_inception_v2_coco_2018_01_28.tar.gz
+tar -xvf ssd_mobilenet_v2_coco_2018_01_28.tar.gz
 ```
 
 Then go to extracted folder.
 ```
-cd faster_rcnn_inception_v2_coco_2018_01_28
+cd ssd_mobilenet_v2_coco_2018_01_28
 ```
 
 Command to convert tensor flow model to IR format using model optimizer.
 ```
-python /opt/intel/openvino/deployment_tools/model_optimizer/mo.py --input_model frozen_inference_graph.pb --tensorflow_object_detection_api_pipeline_config pipeline.config --reverse_input_channels --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/faster_rcnn_support.json
+python /opt/intel/openvino/deployment_tools/model_optimizer/mo.py --input_model frozen_inference_graph.pb --tensorflow_object_detection_api_pipeline_config pipeline.config --reverse_input_channels --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/ssd_v2_support.json
 ```
 - Result images are following
-    ![result image01](./images/Result/1.PNG)
-    ![result image02](./images/Result/2.PNG)
-    ![result image03](./images/Result/3.PNG)
-    ![result image04](./images/Result/4.PNG)
+    ![result image01](./images/Result/t1.PNG)
+    ![result image02](./images/Result/t2.PNG)
+    ![result image03](./images/Result/t3.PNG)
+    ![result image04](./images/Result/t4.PNG)
+
 ## Assess Model Use Cases
 
 * Count the number of people who attend to office as an attendance system.
@@ -74,7 +77,71 @@ a successful model.]
 
 In investigating potential people counter models, I tried each of the following three models:
 
-- Model 1: [faster_rcnn_inception_v2_coco]
+- Model 1: [ssd_mobilenet_v2_coco]
+  - [Model Source] 
+    ```
+    https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md
+    ```
+  - I converted the model to an Intermediate Representation with the following arguments...
+
+    Command to download model.
+    ```
+    wget http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v2_coco_2018_01_28.tar.gz
+    ```
+
+    Then extracted using following command.
+    ```
+    tar -xvf ssd_mobilenet_v2_coco_2018_01_28.tar.gz
+    ```
+
+    Then go to extracted folder.
+    ```
+    cd ssd_mobilenet_v2_coco_2018_01_28
+    ```
+
+    Command to convert tensor flow model to IR format using model optimizer.
+    ```
+    python /opt/intel/openvino/deployment_tools/model_optimizer/mo.py --input_model frozen_inference_graph.pb --tensorflow_object_detection_api_pipeline_config pipeline.config --reverse_input_channels --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/ssd_v2_support.json
+    ```
+
+  - I was able to convert this model into IR format succefully and generate .xml and .bin file.
+
+  - Result images are following
+    ![result image01](./images/Result/t1.PNG)
+    ![result image02](./images/Result/t2.PNG)
+    ![result image03](./images/Result/t3.PNG)
+    ![result image04](./images/Result/t4.PNG)
+
+    - Model 2: [ssd_mobilenet_v1_coco]
+  - [Model Source] 
+    ```
+    https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md
+    ```
+  - I converted the model to an Intermediate Representation with the following arguments...
+
+    Command to download model.
+    ```
+    wget http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_coco_2018_01_28.tar.gz
+    ```
+
+    Then extracted using following command.
+    ```
+    tar -xvf ssd_mobilenet_v1_coco_2018_01_28.tar.gz
+    ```
+
+    Then go to extracted folder.
+    ```
+    cd ssd_mobilenet_v1_coco_2018_01_28
+    ```
+
+    Command to convert tensor flow model to IR format using model optimizer.
+    ```
+    python /opt/intel/openvino/deployment_tools/model_optimizer/mo.py --input_model frozen_inference_graph.pb --tensorflow_object_detection_api_pipeline_config pipeline.config --reverse_input_channels --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/ssd_v2_support.json
+    ```
+
+  - I was able to convert this model into IR format succefully and generate .xml and .bin file.
+
+- Model 3: [faster_rcnn_inception_v2_coco]
   - [Model Source] 
     ```
     https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md
@@ -109,7 +176,7 @@ In investigating potential people counter models, I tried each of the following 
     ![result image03](./images/Result/3.PNG)
     ![result image04](./images/Result/4.PNG)
   
-- Model 2: [faster_rcnn_nas_coco]
+- Model 4: [ssd_mobilenet_v1_coco]
   - [Model Source] 
     ```
     https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md
@@ -139,7 +206,7 @@ In investigating potential people counter models, I tried each of the following 
     - Could not converted into IR format properly.
     ![result image05](./images/Result/e1.PNG)
 
-- Model 3: [ssd_mobilenet_v2_coco]
+- Model 5: [ssd_mobilenet_v2_coco]
   - [Model Source] 
     ```
     https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md
