@@ -100,8 +100,8 @@ def draw_boxes(frame, result, prob_threshold, width, height):
             p2_y = int(box[3] * height)
             centre_x = (p1_x + p2_x)/2
             centre_Y = (p1_y + p2_y)/2
-            check_people_in(frame, centre_Y)
-            check_people_out(frame, centre_x)
+            check_people_in(frame, centre_Y) #check human come into frame
+            check_people_out(frame, centre_x) #cehck human go out from frame
             frame = cv2.rectangle(frame, (p1_x, p1_y), (p2_x, p2_y), (0, 0, 255), 2)
 
 def check_people_in(frame, centre_Y):
@@ -112,9 +112,10 @@ def check_people_in(frame, centre_Y):
         
     global check_in_cnt_check
     global current_count
-    if(check_in_cnt_check > 0):
+    
+    if(check_in_cnt_check > 0): #skip 50 frames for avoid multiple count same human
         check_in_cnt_check -= 1
-    elif(centre_Y > bottom_margin):
+    elif(centre_Y > bottom_margin): #detect human come to frame and counter update
         current_count += 1
         check_in_cnt_check = 50
 
@@ -129,9 +130,9 @@ def check_people_out(frame, centre_x):
     global current_count
     global total_count
     
-    if(check_out_cnt_check > 0):
+    if(check_out_cnt_check > 0): #skip 50 frames for avoid multiple count same human
         check_out_cnt_check -= 1
-    elif(centre_x > right_margin):
+    elif(centre_x > right_margin): #detect human go out from frame and counter update
         current_count -= 1
         total_count += 1
         check_out_cnt_check = 50
