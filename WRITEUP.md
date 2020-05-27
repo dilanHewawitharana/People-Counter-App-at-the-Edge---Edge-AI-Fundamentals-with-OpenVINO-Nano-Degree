@@ -112,7 +112,7 @@ In investigating potential people counter models, I tried each of the following 
     ![result image03](./images/Result/t3.PNG)
     ![result image04](./images/Result/t4.PNG)
 
-    - Model 2: [ssd_mobilenet_v1_coco]
+- Model 2: [ssd_mobilenet_v1_coco]
   - [Model Source] 
     ```
     https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md
